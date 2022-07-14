@@ -16,3 +16,9 @@ class Usuario:
     @property
     def senha(self):
         return self.__senha
+
+class Categoria:
+    pass
+
+class Item:
+    pass
