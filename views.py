@@ -38,7 +38,8 @@ def autenticar():
             usuario_dao.iniciar_sessao(usuario.login)
             flash(usuario.nome + ' logou com sucesso!')
             proxima_pagina = request.form['proxima']
-            if proxima_pagina == '/':
+            print(proxima_pagina)
+            if proxima_pagina == '/' or proxima_pagina == '/index':
                 proxima_pagina = url_for('home')
             return redirect(proxima_pagina)
         else:
@@ -129,3 +130,8 @@ def atualizar_senha():
 def creditos():
     return render_template('creditos.html', titulo='Créditos')
 
+@server.route('/home')
+def home():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('/')))
+    return render_template('sim_home.html', titulo='Sistema de Informação do Museu Virtual')

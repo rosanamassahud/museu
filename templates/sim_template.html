@@ -35,7 +35,7 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand footnotesize" href="{{url_for(index)}}">Museu Virtual</a>
+                    <a class="navbar-brand footnotesize" href="{{url_for('index')}}">Museu Virtual</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="#" title="Cadastros">Cadastro geral de itens</a></li>
@@ -44,12 +44,13 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Relatórios
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                              <li><a href="{{ url_for('relatorio_colheita') }}">Lista geral de<br>itens do museu</a></li>
-                              <li><a href="{{ url_for('relatorio_compras') }}">Itens por categoria</a></li>
-                              <li><a href="{{ url_for('relatorio_custos') }}">Itens por usuário</a></li>
+                              <li><a href="{{ url_for('home') }}">Lista geral de<br>itens do museu</a></li>
+                              <li role="separator" class="divider"></li>
+                                <li><a href="{{ url_for('home') }}">Itens por categoria</a></li>
+                              <li><a href="{{ url_for('home') }}">Itens por usuário</a></li>
                             </ul>
                         </li>
-                    <li><a href="#" title="Gerenciamento de usuários">Gerenciamento de Usuários</a></li>
+                    <li><a href="{{url_for('lista_usuarios')}}" title="Gerenciamento de usuários">Gerenciamento de Usuários</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
