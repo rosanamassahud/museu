@@ -31,4 +31,4 @@ db = MySQL(server)
 from views import *
 
 if __name__ == '__main__':
-    server.run(debug=True, port=5000)
+    server.run(debug=True, port=2000)

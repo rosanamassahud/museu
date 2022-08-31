@@ -2,8 +2,8 @@ from flask import render_template, request, redirect, session, flash, url_for, s
 #from flask_weasyprint import HTML, render_pdf
 #from weasyprint import HTML
 import errorcode
-from models import Usuario
-from dao import UsuarioDao
+from models import Usuario, Categoria,Item
+from dao import UsuarioDao, CategoriaDao,ItemDao
 
 
 import time
@@ -15,6 +15,9 @@ from app import server, db#, app_dash
 import locale
 locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 usuario_dao = UsuarioDao(db)
+categoria_dao = CategoriaDao(db)
+item_dao = ItemDao(db)
+
 @server.route('/')
 @server.route('/index')
 def index():
@@ -43,7 +46,7 @@ def autenticar():
                 proxima_pagina = url_for('home')
             return redirect(proxima_pagina)
         else:
-            flash('Não logado, tente denovo!')
+            flash('Não logado, tente de novo!')
             return redirect(url_for('login'))
 
 @server.route('/logout')
@@ -135,3 +138,98 @@ def home():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('/')))
     return render_template('sim_home.html', titulo='Sistema de Informação do Museu Virtual')
+
+@server.route('/lista_categorias')
+def lista_categorias():
+    #id = session['id_propriedade']
+    lista = categoria_dao.listar()
+    tit_lista = 'Categorias'
+    return render_template('lista_categorias.html', titulo=tit_lista, lista=lista)
+
+@server.route('/nova_categoria')
+def nova_categoria():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('nova_categoria')))
+    return render_template('nova_categoria.html',
+                           titulo='Cadastro de Categorias do Site')
+
+@server.route('/criar_categoria', methods=['POST',])
+def criar_categoria():
+    desc = request.form['descCategoria']
+    ordem = request.form['ordem']
+
+    categoria = Categoria(desc,ordem)
+    categoria = categoria_dao.salvar(categoria)
+    flash('Categoria {} cadastrada com sucesso!'.format(categoria.desc))
+    return redirect(url_for('lista_categorias'))
+
+@server.route('/editar_categoria/<int:id>')
+def editar_categoria(id):
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('editar_categoria')))
+    categoria = categoria_dao.busca_por_id(id)
+    return render_template('editar_categoria.html', titulo='Editando categoria', categoria=categoria)
+
+@server.route('/atualizar_categoria', methods=['POST',])
+def atualizar_categoria():
+    id = request.form['idCategoria']
+    desc = request.form['descCategoria']
+    ordem= request.form['ordem']
+
+    categoria = Categoria(desc, ordem, id=id)
+    categoria_dao.salvar(categoria)
+    return redirect(url_for('lista_categorias'))
+
+@server.route('/deletar_categoria/<int:id>')
+def deletar_categoria(id):
+    categoria_dao.deletar(id)
+    flash('Categoria removida com sucesso!')
+    return redirect(url_for('lista_categorias'))
+
+
+@server.route('/lista_itens')
+def lista_itens():
+    #id = session['id_propriedade']
+    lista = item_dao.listar()
+    tit_lista = 'Manutenção de Itens do Museu Virtual'
+    return render_template('lista_itens.html', titulo=tit_lista, lista=lista)
+
+@server.route('/novo_item')
+def novo_item():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('novo_item')))
+    return render_template('novo_item.html',
+                           titulo='Cadastro de Itens do Museu Virtual')
+'''
+@server.route('/criar_categoria', methods=['POST',])
+def criar_categoria():
+    desc = request.form['descCategoria']
+    ordem = request.form['ordem']
+
+    categoria = Categoria(desc,ordem)
+    categoria = categoria_dao.salvar(categoria)
+    flash('Categoria {} cadastrada com sucesso!'.format(categoria.desc))
+    return redirect(url_for('lista_categorias'))
+
+@server.route('/editar_categoria/<int:id>')
+def editar_categoria(id):
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('editar_categoria')))
+    categoria = categoria_dao.busca_por_id(id)
+    return render_template('editar_categoria.html', titulo='Editando categoria', categoria=categoria)
+
+@server.route('/atualizar_categoria', methods=['POST',])
+def atualizar_categoria():
+    id = request.form['idCategoria']
+    desc = request.form['descCategoria']
+    ordem= request.form['ordem']
+
+    categoria = Categoria(desc, ordem, id=id)
+    categoria_dao.salvar(categoria)
+    return redirect(url_for('lista_categorias'))
+'''
+@server.route('/deletar_item/<int:id>')
+def deletar_item(id):
+    item_dao.deletar(id)
+    flash('Item removido com sucesso!')
+    return redirect(url_for('lista_itens'))
