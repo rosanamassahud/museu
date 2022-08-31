@@ -1,27 +1,44 @@
 {% extends "sim_template.html" %}
 {% block conteudo %}
-    <a class="btn btn-primary" href="{{ url_for('nova_categoria') }}">Cadastrar nova categoria</a>
-
+        <div class="col-md-12 col-xs-12">
+            <a class="btn btn-primary col-md-2 col-xs-12" href="{{ url_for('novo_item') }}">Cadastrar novo item</a>
+            <div class="col-md-1 hidden-sm"><span class="glyphicon glyphicon-search"></span>&nbsp;Filtro:</div>
+            <div class="form-group col-md-9 col-xs-12">
+                <label class="sr-only" for="filtrar-tabela"></label>
+                <input class="form-control" type="text" name="filtro" id="filtrar-tabela" placeholder="Busca por 'descrição' ou 'data de cadastro' ou 'data de aquisição'">
+            </div>
+        </div>
         <table class="table table-striped table-responsive table-bordered">
             <thead class="thead-default">
                 <tr>
                     <th>ID</th>
                     <th>Descrição:</th>
-                    <th>Ordem:</th>
+                    <th>Data aquisição:</th>
+                    <th>Data cadastro:</th>
+                    <th>Tipo:</th>
+                    <th>Arquivo:</th>
+                    <th>Usuário:</th>
+                    <th>Categoria:</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
             {% for i in lista %}
-                <tr>
-                    <td>{{ i.id}}</td>
-                    <td>{{ i.desc }}</td>
-                    <td>{{ i.ordem }}</td>
-                    <td><a href="{{ url_for('editar_categoria', id=i.id) }}">Editar</a></td>
-                    <td><a href="{{ url_for('deletar_categoria', id=i.id) }}">Deletar</a></td>
+                <tr class="item">
+                    <td>{{ i.codigo}}</td>
+                    <td class="info-desc">{{ i.desc }}</td>
+                    <td class="info-dataAquisicao">{{ i.data_aquisicao }}</td>
+                    <td class="info-dataCadastro">{{ i.data_cadastro }}</td>
+                    <td>{{ i.tipo }}</td>
+                    <td>{{ i.arquivo() }}</td>
+                    <td>{{ i.usuario.nome }}</td>
+                    <td>{{ i.categoria.desc }}</td>
+                    <td><a href="">Editar</a></td>
+                    <td><a href="{{ url_for('deletar_item', id=i.codigo) }}">Deletar</a></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+<script type="text/javascript" src="/static/js/views/ItemFiltro.js"></script>
 {% endblock %}
